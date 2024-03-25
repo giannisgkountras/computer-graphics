@@ -6,4 +6,6 @@ np.load = lambda *a,**k: np_load_old(*a, allow_pickle=True, **k)
 
 data = np.load('hw1.npy')
 print(data)
+
+
 np.load = np_load_old
