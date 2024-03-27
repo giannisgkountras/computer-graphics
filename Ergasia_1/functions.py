@@ -89,6 +89,10 @@ def f_shading(img, vertices, vcolors):
         MxNx3 array: The updated image with RGB for each pixel plus the old image (overlapping common pixels)
 
     """
+
+    # Calculate the vector mean of the color
+
+    color = [0, 1, 0.5]
     # Save coordinates of each vertex
     x1, y1 = vertices[0]
     x2, y2 = vertices[1]
@@ -184,12 +188,23 @@ def f_shading(img, vertices, vcolors):
                         y,
                     ]
                 )
-        # print("Active edges are")
-        # for active_edge in active_edges:
-        #     print(active_edge["name"])
-        # print("With slope")
-        # for active_edge in active_edges:
-        #     print(active_edge["slope"])
-        print("Active points are")
-        print(active_points)
-        print("=================")
+
+            # Remove dublicate points from active points:
+            unique_active_points = []
+            for point in active_points:
+                if point not in unique_active_points:
+                    unique_active_points.append(point)
+
+            # Sort active points based on x
+            sorted_active_points = sorted(unique_active_points, key=lambda x: x[0])
+
+            # Draw the flat color on the img
+            if len(sorted_active_points) == 1:
+                continue
+            elif len(sorted_active_points) > 1:
+                for x in range(
+                    math.floor(sorted_active_points[0][0]),
+                    math.floor(sorted_active_points[1][0]),
+                ):
+                    img[y][x] = color
+    return img
