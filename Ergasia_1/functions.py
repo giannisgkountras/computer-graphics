@@ -141,6 +141,10 @@ def f_shading(img, vertices, vcolors):
             if edge["y_max"] == y:
                 active_edges.remove(edge)
 
+            # Handle horizontal edges using the convention that they belong in the top triangle
+            if edge["y_min"] == edge["y_max"] and y == y_min_total:
+                active_edges.append(edge)
+
         print("For scanline ", y, " Active edges are: ")
         for active_edge in active_edges:
             print(active_edge["name"])
