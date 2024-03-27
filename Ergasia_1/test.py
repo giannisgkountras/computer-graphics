@@ -17,4 +17,4 @@ dim = 1
 
 # print(vector_interp(p1, p2, V1, V2, coord, dim))
 
-f_shading([], [[0, 0], [2, 0], [0, 2]], [])
+f_shading([], [[0, 0], [0, 2], [2, 0]], [])

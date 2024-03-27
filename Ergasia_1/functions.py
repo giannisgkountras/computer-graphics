@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import math
 
 
 def vector_interp(p1, p2, V1, V2, coord, dim):
@@ -100,6 +101,8 @@ def f_shading(img, vertices, vcolors):
         "x_max": max(x1, x2),
         "y_min": min(y1, y2),
         "y_max": max(y1, y2),
+        # If x2 - x1 is zero set the slope to infinity
+        "slope": (y2 - y1) / (x2 - x1) if (x2 - x1) != 0 else math.inf,
     }
 
     # Edge one is between vertex 2 and 3
@@ -109,6 +112,8 @@ def f_shading(img, vertices, vcolors):
         "x_max": max(x2, x3),
         "y_min": min(y2, y3),
         "y_max": max(y2, y3),
+        # If x3 - x2 is zero set the slope to infinity
+        "slope": (y3 - y2) / (x3 - x2) if (x3 - x2) != 0 else math.inf,
     }
 
     # Edge one is between vertex 3 and 1
@@ -118,6 +123,8 @@ def f_shading(img, vertices, vcolors):
         "x_max": max(x3, x1),
         "y_min": min(y3, y1),
         "y_max": max(y3, y1),
+        # If x1 - x1 is zero set the slope to infinity
+        "slope": (y1 - y3) / (x1 - x3) if (x1 - x3) != 0 else math.inf,
     }
 
     # Array of edges
@@ -132,20 +139,57 @@ def f_shading(img, vertices, vcolors):
     # Initialise active_edges as an empty array
     active_edges = []
 
+    # Initialise active_points as an empty array
+    active_points = []
+
     # Update the active edges for moving scanline
     for y in range(y_min_total, y_max_total + 1):
         # We use the convention that the lowest vertex does belong in the triangle but the top does not
         for edge in edges:
-            # Add an edge to active edges as soon as y reaches its y_min
+            # Add an edge to active_edges as soon as y reaches its y_min
             if edge["y_min"] == y:
                 active_edges.append(edge)
+            # Remove an edge from active_edges when we reach its max
             if edge["y_max"] <= y and edge in active_edges:
                 active_edges.remove(edge)
-
             # Handle horizontal edges using the convention that they belong in the top triangle
             if edge["y_min"] == edge["y_max"] and y == y_min_total:
                 active_edges.append(edge)
 
-        print("For scanline ", y, " Active edges are: ")
+        # Reset active points
+        active_points = []
+
+        # Caclculate new active points
         for active_edge in active_edges:
-            print(active_edge["name"])
+            # Handle vertical active edges
+            if active_edge["slope"] == math.inf:
+                active_points.append([active_edge["x_min"], y])
+
+            # Handle positive slope active edges
+            elif active_edge["slope"] > 0:
+                active_points.append(
+                    [
+                        active_edge["x_min"]
+                        + (1 / active_edge["slope"]) * (y - active_edge["y_min"]),
+                        y,
+                    ]
+                )
+
+            # Handle negative slope active edges
+            elif active_edge["slope"] < 0:
+                active_points.append(
+                    [
+                        active_edge["x_max"]
+                        + (1 / active_edge["slope"]) * (y - active_edge["y_min"]),
+                        y,
+                    ]
+                )
+        # print("Active edges are")
+        # for active_edge in active_edges:
+        #     print(active_edge["name"])
+        # print("With slope")
+        # for active_edge in active_edges:
+        #     print(active_edge["slope"])
+        print("Active points are")
+        print(active_points)
+        print("=================")
