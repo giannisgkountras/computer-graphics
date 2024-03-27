@@ -136,9 +136,10 @@ def f_shading(img, vertices, vcolors):
     for y in range(y_min_total, y_max_total + 1):
         # We use the convention that the lowest vertex does belong in the triangle but the top does not
         for edge in edges:
+            # Add an edge to active edges as soon as y reaches its y_min
             if edge["y_min"] == y:
                 active_edges.append(edge)
-            if edge["y_max"] == y:
+            if edge["y_max"] <= y and edge in active_edges:
                 active_edges.remove(edge)
 
             # Handle horizontal edges using the convention that they belong in the top triangle
