@@ -88,4 +88,59 @@ def f_shading(img, vertices, vcolors):
         MxNx3 array: The updated image with RGB for each pixel plus the old image (overlapping common pixels)
 
     """
-    pass
+    # Save coordinates of each vertex
+    x1, y1 = vertices[0]
+    x2, y2 = vertices[1]
+    x3, y3 = vertices[2]
+
+    # Edge one is between vertex 1 and 2
+    edge1 = {
+        "name": "Edge 1",
+        "x_min": min(x1, x2),
+        "x_max": max(x1, x2),
+        "y_min": min(y1, y2),
+        "y_max": max(y1, y2),
+    }
+
+    # Edge one is between vertex 2 and 3
+    edge2 = {
+        "name": "Edge 2",
+        "x_min": min(x2, x3),
+        "x_max": max(x2, x3),
+        "y_min": min(y2, y3),
+        "y_max": max(y2, y3),
+    }
+
+    # Edge one is between vertex 3 and 1
+    edge3 = {
+        "name": "Edge 3",
+        "x_min": min(x3, x1),
+        "x_max": max(x3, x1),
+        "y_min": min(y3, y1),
+        "y_max": max(y3, y1),
+    }
+
+    # Array of edges
+    edges = [edge1, edge2, edge3]
+
+    # Find the minimum y of all edges
+    y_min_total = min(edge["y_min"] for edge in edges)
+
+    # Find the maximum y of all edges
+    y_max_total = max(edge["y_max"] for edge in edges)
+
+    # Initialise active_edges as an empty array
+    active_edges = []
+
+    # Update the active edges for moving scanline
+    for y in range(y_min_total, y_max_total + 1):
+        # We use the convention that the lowest vertex does belong in the triangle but the top does not
+        for edge in edges:
+            if edge["y_min"] == y:
+                active_edges.append(edge)
+            if edge["y_max"] == y:
+                active_edges.remove(edge)
+
+        print("For scanline ", y, " Active edges are: ")
+        for active_edge in active_edges:
+            print(active_edge["name"])
