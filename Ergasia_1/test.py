@@ -8,10 +8,10 @@ from functions import vector_interp
 # np.load = np_load_old
 
 p1 = [0, 10]
-p2 = [0, 0]
+p2 = [10, 0]
 V1 = [0, 0, 0]
 V2 = [2, 2, 2]
 coord = 0
-dim = 2
+dim = 1
 
 print(vector_interp(p1, p2, V1, V2, coord, dim))

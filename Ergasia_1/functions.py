@@ -23,15 +23,15 @@ def vector_interp(p1, p2, V1, V2, coord, dim):
         if p1[0] < p2[0]:
             x1 = p1[0]
             x2 = p2[0]
+            V_left = V1
+            V_right = V2
         else:
             # In the case of p2 beeing more left than p1 we name x1
-            # the x coordinate of p2 and swap the names of the vectors (V1 becomes V2 and the opposite)
+            # the x coordinate of p2 and also swap the vectors
             x1 = p2[0]
             x2 = p1[0]
-            V_temp = V1
-            V1 = V2
-            V2 = V_temp
-
+            V_left = V2
+            V_right = V1
         # Calculate the distance between the points on the x axis
         width = x2 - x1
 
@@ -40,24 +40,26 @@ def vector_interp(p1, p2, V1, V2, coord, dim):
         percentage = (coord - x1) / width
 
         # Calculate the final vector by doing a linear interpolation
-        # using the percentage and V1 and V2. Since the percentage is calculated based
-        # on the most left point, we use (1 - percentage) for V1
-        V = np.add(np.multiply((1 - percentage), V1), np.multiply(percentage, V2))
+        # using the percentage and V_left and V_right. Since the percentage is calculated based
+        # on the most left point, we use (1 - percentage) for V_left
+        V = np.add(
+            np.multiply((1 - percentage), V_left), np.multiply(percentage, V_right)
+        )
 
     if dim == 2:
         # Check which point is more down and name its y coordinate y1
         if p1[1] < p2[1]:
             y1 = p1[1]
             y2 = p2[1]
+            V_down = V1
+            V_up = V2
         else:
             # In the case of p2 beeing more down than p1 we name y1
-            # the y coordinate of p2 and swap the names of the vectors (V1 becomes V2 and the opposite)
+            # the y coordinate of p2 and also swap the vectors
             y1 = p2[1]
             y2 = p1[1]
-            V_temp = V1
-            V1 = V2
-            V2 = V_temp
-
+            V_down = V2
+            V_up = V1
         # Calculate the distance between the points on the y axis
         height = y2 - y1
 
@@ -66,9 +68,9 @@ def vector_interp(p1, p2, V1, V2, coord, dim):
         percentage = (coord - y1) / height
 
         # Calculate the final vector by doing a linear interpolation
-        # using the percentage and V1 and V2. Since the percentage is calculated based
-        # on the most down point, we use (1 - percentage) for V1
-        V = np.add(np.multiply((1 - percentage), V1), np.multiply(percentage, V2))
+        # using the percentage and V_down and V_up. Since the percentage is calculated based
+        # on the most down point, we use (1 - percentage) for V_down
+        V = np.add(np.multiply((1 - percentage), V_down), np.multiply(percentage, V_up))
 
     return V
 
