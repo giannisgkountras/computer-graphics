@@ -26,20 +26,17 @@ img = np.ones((512, 512, 3), dtype=float)
 
 g_img = g_shading(
     img,
-    [
-        [300, 80],
-        [413, 500],
-        [30, 200],
-    ],
-    [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1]],
+    [[20, 20], [300, 70], [400, 400]],
+    [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
 )
 
 # updated_img *= 255
 # updated_img = updated_img.astype(np.uint8)
 g_img *= 255
 g_img = g_img.astype(np.uint8)
+rgb_g_img = cv2.cvtColor(g_img, cv2.COLOR_BGR2RGB)
 
-cv2.imshow("Image", g_img)
+cv2.imshow("Image", rgb_g_img)
 # cv2.imshow("Image", updated_img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

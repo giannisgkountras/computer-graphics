@@ -30,6 +30,7 @@ def vector_interp(p1, p2, V1, V2, coord, dim):
             x2 = p2[0]
             V_left = V1
             V_right = V2
+
         else:
             # In the case of p2 beeing more left than p1 we name x1
             # the x coordinate of p2 and also swap the vectors
@@ -37,6 +38,7 @@ def vector_interp(p1, p2, V1, V2, coord, dim):
             x2 = p1[0]
             V_left = V2
             V_right = V1
+
         # Calculate the distance between the points on the x axis
         width = x2 - x1
 
@@ -244,7 +246,9 @@ def g_shading(img, vertices, vcolors):
         "x_max": max(x1, x2),
         "y_min": min(y1, y2),
         "y_max": max(y1, y2),
-        "colors": [vertices[0], vertices[1]] if y1 < y2 else [vertices[1], vertices[0]],
+        "colors": [vcolors[0], vcolors[1]] if y1 < y2 else [vcolors[1], vcolors[0]],
+        "down_vertex": [x1, y1] if y1 < y2 else [x2, y2],
+        "up_vertex": [x1, y1] if y1 > y2 else [x2, y2],
         # If x2 - x1 is zero set the slope to infinity
         "slope": (y2 - y1) / (x2 - x1) if (x2 - x1) != 0 else math.inf,
     }
@@ -256,7 +260,9 @@ def g_shading(img, vertices, vcolors):
         "x_max": max(x2, x3),
         "y_min": min(y2, y3),
         "y_max": max(y2, y3),
-        "colors": [vertices[1], vertices[2]] if y2 < y3 else [vertices[1], vertices[2]],
+        "colors": [vcolors[1], vcolors[2]] if y2 < y3 else [vcolors[2], vcolors[1]],
+        "down_vertex": [x2, y2] if y2 < y3 else [x3, y3],
+        "up_vertex": [x2, y2] if y2 > y3 else [x3, y3],
         # If x3 - x2 is zero set the slope to infinity
         "slope": (y3 - y2) / (x3 - x2) if (x3 - x2) != 0 else math.inf,
     }
@@ -268,7 +274,9 @@ def g_shading(img, vertices, vcolors):
         "x_max": max(x3, x1),
         "y_min": min(y3, y1),
         "y_max": max(y3, y1),
-        "colors": [vertices[2], vertices[0]] if y3 < y1 else [vertices[0], vertices[2]],
+        "colors": [vcolors[2], vcolors[0]] if y3 < y1 else [vcolors[0], vcolors[2]],
+        "down_vertex": [x3, y3] if y3 < y1 else [x1, y1],
+        "up_vertex": [x3, y3] if y3 > y1 else [x1, y1],
         # If x1 - x1 is zero set the slope to infinity
         "slope": (y1 - y3) / (x1 - x3) if (x1 - x3) != 0 else math.inf,
     }
@@ -341,26 +349,46 @@ def g_shading(img, vertices, vcolors):
         sorted_active_points = sorted(unique_active_points, key=lambda x: x[0])
 
         # Calculate left and right colors for this scanline
-        C12 = vector_interp([x1, y1], [x2, y2], vcolors[0], vcolors[1], y, 2)
-        C23 = vector_interp([x2, y2], [x3, y3], vcolors[1], vcolors[2], y, 2)
+        color_left = []
+        color_right = []
 
-        # C12 = vector_interp(
-        #     [active_edges[0]["x_min"], [active_edges[0]["y_min"]]],
-        #     [active_edges[1]["x_min"], [active_edges[1]["y_min"]]],
-        #     vcolors[0],
-        #     vcolors[1],
-        #     y,
-        #     2,
-        # )
+        # Sort active edges based on x_min:
+        sorted_active_edges = sorted(
+            active_edges,
+            key=lambda x: (
+                x["x_min"],
+                x["x_max"],
+            ),
+        )
+
+        if len(sorted_active_edges) > 1:
+            color_left = vector_interp(
+                sorted_active_edges[0]["down_vertex"],
+                sorted_active_edges[0]["up_vertex"],
+                sorted_active_edges[0]["colors"][0],
+                sorted_active_edges[0]["colors"][1],
+                y,
+                2,
+            )
+
+            color_right = vector_interp(
+                sorted_active_edges[1]["down_vertex"],
+                sorted_active_edges[1]["up_vertex"],
+                sorted_active_edges[1]["colors"][0],
+                sorted_active_edges[1]["colors"][1],
+                y,
+                2,
+            )
+        else:
+            color_left = color_right = [0, 0, 0]
 
         # Draw the calculated color for each x in the img
         if len(sorted_active_points) == 1:
-            print(sorted_active_points)
             color = vector_interp(
                 [sorted_active_points[0][0], y],
                 [sorted_active_points[0][0], y],
-                C12,
-                C23,
+                color_left,
+                color_right,
                 sorted_active_points[0][0],
                 1,
             )
@@ -373,10 +401,10 @@ def g_shading(img, vertices, vcolors):
                 color = vector_interp(
                     [sorted_active_points[0][0], y],
                     [sorted_active_points[1][0], y],
-                    C12,
-                    C23,
+                    color_left,
+                    color_right,
                     x,
                     1,
                 )
-                img[y][x] = np.array(color)
+                img[y][x] = color
     return img
