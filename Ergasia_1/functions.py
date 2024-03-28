@@ -244,6 +244,7 @@ def g_shading(img, vertices, vcolors):
         "x_max": max(x1, x2),
         "y_min": min(y1, y2),
         "y_max": max(y1, y2),
+        "colors": [vertices[0], vertices[1]] if y1 < y2 else [vertices[1], vertices[0]],
         # If x2 - x1 is zero set the slope to infinity
         "slope": (y2 - y1) / (x2 - x1) if (x2 - x1) != 0 else math.inf,
     }
@@ -255,6 +256,7 @@ def g_shading(img, vertices, vcolors):
         "x_max": max(x2, x3),
         "y_min": min(y2, y3),
         "y_max": max(y2, y3),
+        "colors": [vertices[1], vertices[2]] if y2 < y3 else [vertices[1], vertices[2]],
         # If x3 - x2 is zero set the slope to infinity
         "slope": (y3 - y2) / (x3 - x2) if (x3 - x2) != 0 else math.inf,
     }
@@ -266,6 +268,7 @@ def g_shading(img, vertices, vcolors):
         "x_max": max(x3, x1),
         "y_min": min(y3, y1),
         "y_max": max(y3, y1),
+        "colors": [vertices[2], vertices[0]] if y3 < y1 else [vertices[0], vertices[2]],
         # If x1 - x1 is zero set the slope to infinity
         "slope": (y1 - y3) / (x1 - x3) if (x1 - x3) != 0 else math.inf,
     }
@@ -340,6 +343,15 @@ def g_shading(img, vertices, vcolors):
         # Calculate left and right colors for this scanline
         C12 = vector_interp([x1, y1], [x2, y2], vcolors[0], vcolors[1], y, 2)
         C23 = vector_interp([x2, y2], [x3, y3], vcolors[1], vcolors[2], y, 2)
+
+        # C12 = vector_interp(
+        #     [active_edges[0]["x_min"], [active_edges[0]["y_min"]]],
+        #     [active_edges[1]["x_min"], [active_edges[1]["y_min"]]],
+        #     vcolors[0],
+        #     vcolors[1],
+        #     y,
+        #     2,
+        # )
 
         # Draw the calculated color for each x in the img
         if len(sorted_active_points) == 1:
