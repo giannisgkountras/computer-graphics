@@ -90,14 +90,15 @@ def f_shading(img, vertices, vcolors):
 
     """
 
-    # Calculate the vector mean of the color
-
-    color = [0, 1, 0.5]
     # Save coordinates of each vertex
     x1, y1 = vertices[0]
     x2, y2 = vertices[1]
     x3, y3 = vertices[2]
 
+    # Calculate the vector mean of the color
+    color = [(vcolors[0][i] + vcolors[1][i] + vcolors[2][i]) / 3 for i in range(3)]
+
+    print(color)
     # Edge one is between vertex 1 and 2
     edge1 = {
         "name": "Edge 1",
@@ -206,5 +207,5 @@ def f_shading(img, vertices, vcolors):
                     math.floor(sorted_active_points[0][0]),
                     math.floor(sorted_active_points[1][0]),
                 ):
-                    img[y][x] = color
+                    img[y][x] = np.array(color)
     return img
