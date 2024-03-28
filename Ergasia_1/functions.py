@@ -147,7 +147,7 @@ def f_shading(img, vertices, vcolors):
     # Initialise active_points as an empty array
     active_points = []
 
-    # Update the active edges for moving scanline
+    # Implementation of the scanline
     for y in range(y_min_total, y_max_total + 1):
         # We use the convention that the lowest vertex does belong in the triangle but the top does not
         for edge in edges:
@@ -201,7 +201,7 @@ def f_shading(img, vertices, vcolors):
 
             # Draw the flat color on the img
             if len(sorted_active_points) == 1:
-                continue
+                img[y, math.floor(sorted_active_points[0][0])] = np.array(color)
             elif len(sorted_active_points) > 1:
                 for x in range(
                     math.floor(sorted_active_points[0][0]),
