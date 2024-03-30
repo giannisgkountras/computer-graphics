@@ -1,5 +1,48 @@
 import numpy as np
 import math
+from vector_interp import vector_interp
+
+
+def point_belongs_to_edge(point, edge):
+    """
+    Check if a given point belongs to a given edge.
+
+    Args:
+    point (array): The coordinates of the point in the form [x, y].
+    edge (dict): The edge represented as a dictionary with the following keys:
+        - "x_min" (float): The minimum x-coordinate of the edge's bounding box.
+        - "x_max" (float): The maximum x-coordinate of the edge's bounding box.
+        - "y_min" (float): The minimum y-coordinate of the edge's bounding box.
+        - "y_max" (float): The maximum y-coordinate of the edge's bounding box.
+        - "vertices" (list): The vertices of the edge represented as a list of tuples (x, y).
+
+    Returns:
+    bool: True if the point belongs to the edge, False otherwise.
+    """
+    x, y = point
+    x_min, x_max = edge["x_min"], edge["x_max"]
+    y_min, y_max = edge["y_min"], edge["y_max"]
+
+    # Check if point lies within the bounding box of the edge
+    if x < x_min or x > x_max or y < y_min or y > y_max:
+        return False
+
+    # Check if point lies on the line segment formed by the edge's vertices
+    x1, y1 = edge["vertices"][0]
+    x2, y2 = edge["vertices"][1]
+
+    # Calculate the slope of the edge
+    slope = (y2 - y1) / (x2 - x1) if (x2 - x1) != 0 else float("inf")
+
+    # If the edge is vertical, check if the x-coordinate of the point matches
+    if slope == float("inf"):
+        return x == x1
+
+    # Calculate the expected y-coordinate of the point on the edge
+    expected_y = y1 + slope * (x - x1)
+
+    # Check if the actual y-coordinate matches the expected y-coordinate
+    return math.isclose(y, expected_y)
 
 
 def g_shading(img, vertices, vcolors):
@@ -15,23 +58,24 @@ def g_shading(img, vertices, vcolors):
         MxNx3 array: The updated image with RGB for each pixel plus the old image (overlapping common pixels)
 
     """
+
     # Save coordinates of each vertex
     x1, y1 = vertices[0]
     x2, y2 = vertices[1]
     x3, y3 = vertices[2]
 
-    # Edge one is between vertex 1 and 2
+    # Define the edges
     edge1 = {
         "name": "Edge 1",
         "x_min": min(x1, x2),
         "x_max": max(x1, x2),
         "y_min": min(y1, y2),
         "y_max": max(y1, y2),
-        "colors": [vcolors[0], vcolors[1]] if y1 < y2 else [vcolors[1], vcolors[0]],
-        "down_vertex": [x1, y1] if y1 < y2 else [x2, y2],
-        "up_vertex": [x1, y1] if y1 > y2 else [x2, y2],
         # If x2 - x1 is zero set the slope to infinity
         "slope": (y2 - y1) / (x2 - x1) if (x2 - x1) != 0 else math.inf,
+        "top_color": vcolors[0] if y1 > y2 else vcolors[1],
+        "bottom_color": vcolors[1] if y1 > y2 else vcolors[0],
+        "vertices": [[x1, y1], [x2, y2]],
     }
 
     # Edge one is between vertex 2 and 3
@@ -41,11 +85,11 @@ def g_shading(img, vertices, vcolors):
         "x_max": max(x2, x3),
         "y_min": min(y2, y3),
         "y_max": max(y2, y3),
-        "colors": [vcolors[1], vcolors[2]] if y2 < y3 else [vcolors[2], vcolors[1]],
-        "down_vertex": [x2, y2] if y2 < y3 else [x3, y3],
-        "up_vertex": [x2, y2] if y2 > y3 else [x3, y3],
         # If x3 - x2 is zero set the slope to infinity
         "slope": (y3 - y2) / (x3 - x2) if (x3 - x2) != 0 else math.inf,
+        "top_color": vcolors[1] if y2 > y3 else vcolors[2],
+        "bottom_color": vcolors[2] if y2 > y3 else vcolors[1],
+        "vertices": [[x2, y2], [x3, y3]],
     }
 
     # Edge one is between vertex 3 and 1
@@ -55,11 +99,11 @@ def g_shading(img, vertices, vcolors):
         "x_max": max(x3, x1),
         "y_min": min(y3, y1),
         "y_max": max(y3, y1),
-        "colors": [vcolors[2], vcolors[0]] if y3 < y1 else [vcolors[0], vcolors[2]],
-        "down_vertex": [x3, y3] if y3 < y1 else [x1, y1],
-        "up_vertex": [x3, y3] if y3 > y1 else [x1, y1],
         # If x1 - x1 is zero set the slope to infinity
         "slope": (y1 - y3) / (x1 - x3) if (x1 - x3) != 0 else math.inf,
+        "top_color": vcolors[2] if y3 > y1 else vcolors[0],
+        "bottom_color": vcolors[0] if y3 > y1 else vcolors[2],
+        "vertices": [[x3, y3], [x1, y1]],
     }
 
     # Array of edges
@@ -129,47 +173,35 @@ def g_shading(img, vertices, vcolors):
         # Sort active points based on x
         sorted_active_points = sorted(unique_active_points, key=lambda x: x[0])
 
-        # Calculate left and right colors for this scanline
-        color_left = []
-        color_right = []
+        if len(active_edges) > 1:
+            if point_belongs_to_edge(sorted_active_points[0], active_edges[0]):
+                left_edge = active_edges[0]
+                right_edge = active_edges[1]
+            else:
+                left_edge = active_edges[1]
+                right_edge = active_edges[0]
 
-        # Sort active edges based on x_min:
-        sorted_active_edges = sorted(
-            active_edges,
-            key=lambda x: (x["x_min"], x["x_max"], x["name"]),
-        )
-
-        if len(sorted_active_edges) > 1:
+            # Interpolate colors for the left and right edges
             color_left = vector_interp(
-                sorted_active_edges[0]["down_vertex"],
-                sorted_active_edges[0]["up_vertex"],
-                sorted_active_edges[0]["colors"][0],
-                sorted_active_edges[0]["colors"][1],
+                [0, left_edge["y_min"]],
+                [0, left_edge["y_max"]],
+                left_edge["bottom_color"],
+                left_edge["top_color"],
                 y,
                 2,
             )
 
             color_right = vector_interp(
-                sorted_active_edges[1]["down_vertex"],
-                sorted_active_edges[1]["up_vertex"],
-                sorted_active_edges[1]["colors"][0],
-                sorted_active_edges[1]["colors"][1],
+                [0, right_edge["y_min"]],
+                [0, right_edge["y_max"]],
+                right_edge["bottom_color"],
+                right_edge["top_color"],
                 y,
                 2,
             )
-        else:
-            color_left = color_right = [0, 0, 0]
 
-        # Draw the calculated color for each x in the img
         if len(sorted_active_points) == 1:
-            color = vector_interp(
-                [sorted_active_points[0][0], y],
-                [sorted_active_points[0][0], y],
-                color_left,
-                color_right,
-                sorted_active_points[0][0],
-                1,
-            )
+            color = [0, 0, 0]
             img[y, math.floor(sorted_active_points[0][0])] = np.array(color)
         elif len(sorted_active_points) > 1:
             for x in range(
@@ -177,12 +209,13 @@ def g_shading(img, vertices, vcolors):
                 math.floor(sorted_active_points[1][0]),
             ):
                 color = vector_interp(
-                    [sorted_active_points[0][0], y],
-                    [sorted_active_points[1][0], y],
+                    [sorted_active_points[0][0], 0],
+                    [sorted_active_points[1][0], 0],
                     color_left,
                     color_right,
                     x,
                     1,
                 )
-                img[y][x] = color
+                img[y][x] = np.array(color)
+
     return img

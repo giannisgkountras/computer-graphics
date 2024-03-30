@@ -1,9 +1,10 @@
 import numpy as np
 import cv2
-import math
-from functions import vector_interp
-from functions import f_shading
-from functions import g_shading
+from vector_interp import vector_interp
+from f_shading import f_shading
+
+# from functions import g_shading
+from g_shading import g_shading
 
 # np_load_old = np.load
 # np.load = lambda *a, **k: np_load_old(*a, allow_pickle=True, **k)
@@ -26,7 +27,7 @@ img = np.ones((512, 512, 3), dtype=float)
 
 g_img = g_shading(
     img,
-    [[20, 20], [300, 70], [400, 400]],
+    [[10, 50], [400, 150], [500, 500]],
     [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
 )
 

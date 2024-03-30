@@ -2,9 +2,9 @@ import numpy as np
 import math
 
 
-def g_shading(img, vertices, vcolors):
+def f_shading(img, vertices, vcolors):
     """
-    This image gives each of the triangle's pixels the interpolated vector of the 3 apex colors.
+    This image gives triangles the vector mean of the 3 apex colors.
 
     Args:
         img (MxNx3 array): The image with previously existing triangles
@@ -15,11 +15,16 @@ def g_shading(img, vertices, vcolors):
         MxNx3 array: The updated image with RGB for each pixel plus the old image (overlapping common pixels)
 
     """
+
     # Save coordinates of each vertex
     x1, y1 = vertices[0]
     x2, y2 = vertices[1]
     x3, y3 = vertices[2]
 
+    # Calculate the vector mean of the color
+    color = [(vcolors[0][i] + vcolors[1][i] + vcolors[2][i]) / 3 for i in range(3)]
+
+    print(color)
     # Edge one is between vertex 1 and 2
     edge1 = {
         "name": "Edge 1",
@@ -27,9 +32,6 @@ def g_shading(img, vertices, vcolors):
         "x_max": max(x1, x2),
         "y_min": min(y1, y2),
         "y_max": max(y1, y2),
-        "colors": [vcolors[0], vcolors[1]] if y1 < y2 else [vcolors[1], vcolors[0]],
-        "down_vertex": [x1, y1] if y1 < y2 else [x2, y2],
-        "up_vertex": [x1, y1] if y1 > y2 else [x2, y2],
         # If x2 - x1 is zero set the slope to infinity
         "slope": (y2 - y1) / (x2 - x1) if (x2 - x1) != 0 else math.inf,
     }
@@ -41,9 +43,6 @@ def g_shading(img, vertices, vcolors):
         "x_max": max(x2, x3),
         "y_min": min(y2, y3),
         "y_max": max(y2, y3),
-        "colors": [vcolors[1], vcolors[2]] if y2 < y3 else [vcolors[2], vcolors[1]],
-        "down_vertex": [x2, y2] if y2 < y3 else [x3, y3],
-        "up_vertex": [x2, y2] if y2 > y3 else [x3, y3],
         # If x3 - x2 is zero set the slope to infinity
         "slope": (y3 - y2) / (x3 - x2) if (x3 - x2) != 0 else math.inf,
     }
@@ -55,9 +54,6 @@ def g_shading(img, vertices, vcolors):
         "x_max": max(x3, x1),
         "y_min": min(y3, y1),
         "y_max": max(y3, y1),
-        "colors": [vcolors[2], vcolors[0]] if y3 < y1 else [vcolors[0], vcolors[2]],
-        "down_vertex": [x3, y3] if y3 < y1 else [x1, y1],
-        "up_vertex": [x3, y3] if y3 > y1 else [x1, y1],
         # If x1 - x1 is zero set the slope to infinity
         "slope": (y1 - y3) / (x1 - x3) if (x1 - x3) != 0 else math.inf,
     }
@@ -129,60 +125,13 @@ def g_shading(img, vertices, vcolors):
         # Sort active points based on x
         sorted_active_points = sorted(unique_active_points, key=lambda x: x[0])
 
-        # Calculate left and right colors for this scanline
-        color_left = []
-        color_right = []
-
-        # Sort active edges based on x_min:
-        sorted_active_edges = sorted(
-            active_edges,
-            key=lambda x: (x["x_min"], x["x_max"], x["name"]),
-        )
-
-        if len(sorted_active_edges) > 1:
-            color_left = vector_interp(
-                sorted_active_edges[0]["down_vertex"],
-                sorted_active_edges[0]["up_vertex"],
-                sorted_active_edges[0]["colors"][0],
-                sorted_active_edges[0]["colors"][1],
-                y,
-                2,
-            )
-
-            color_right = vector_interp(
-                sorted_active_edges[1]["down_vertex"],
-                sorted_active_edges[1]["up_vertex"],
-                sorted_active_edges[1]["colors"][0],
-                sorted_active_edges[1]["colors"][1],
-                y,
-                2,
-            )
-        else:
-            color_left = color_right = [0, 0, 0]
-
-        # Draw the calculated color for each x in the img
+        # Draw the flat color on the img
         if len(sorted_active_points) == 1:
-            color = vector_interp(
-                [sorted_active_points[0][0], y],
-                [sorted_active_points[0][0], y],
-                color_left,
-                color_right,
-                sorted_active_points[0][0],
-                1,
-            )
             img[y, math.floor(sorted_active_points[0][0])] = np.array(color)
         elif len(sorted_active_points) > 1:
             for x in range(
                 math.floor(sorted_active_points[0][0]),
                 math.floor(sorted_active_points[1][0]),
             ):
-                color = vector_interp(
-                    [sorted_active_points[0][0], y],
-                    [sorted_active_points[1][0], y],
-                    color_left,
-                    color_right,
-                    x,
-                    1,
-                )
-                img[y][x] = color
+                img[y][x] = np.array(color)
     return img
