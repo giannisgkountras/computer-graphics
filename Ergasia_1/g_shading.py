@@ -32,10 +32,10 @@ def point_belongs_to_edge(point, edge):
     x2, y2 = edge["vertices"][1]
 
     # Calculate the slope of the edge
-    slope = (y2 - y1) / (x2 - x1) if (x2 - x1) != 0 else float("inf")
+    slope = edge["slope"]
 
     # If the edge is vertical, check if the x-coordinate of the point matches
-    if slope == float("inf"):
+    if slope == math.inf:
         return x == x1
 
     # Calculate the expected y-coordinate of the point on the edge
