@@ -43,6 +43,5 @@ rgb_img_f = cv2.cvtColor(img_f, cv2.COLOR_BGR2RGB)
 
 cv2.imshow("Flat", rgb_img_g)
 cv2.imshow("Gouraud", rgb_img_f)
-# cv2.imshow("Image", updated_img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
