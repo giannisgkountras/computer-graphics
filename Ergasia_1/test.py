@@ -2,17 +2,15 @@ import numpy as np
 import cv2
 from vector_interp import vector_interp
 from f_shading import f_shading
-
-# from functions import g_shading
+from render_img import render_img
 from g_shading import g_shading
 
-# np_load_old = np.load
-# np.load = lambda *a, **k: np_load_old(*a, allow_pickle=True, **k)
-# data = np.load("hw1.npy")
-# print(data)
-# np.load = np_load_old
 
-img = np.ones((512, 512, 3), dtype=float)
+data = np.load("hw1.npy", allow_pickle=True).item()
+# print(data)
+
+img_f = np.ones((512, 512, 3), dtype=float)
+img_g = np.ones((512, 512, 3), dtype=float)
 
 # updated_img = f_shading(
 #     img,
@@ -25,19 +23,26 @@ img = np.ones((512, 512, 3), dtype=float)
 # )
 
 
-g_img = g_shading(
-    img,
-    [[10, 50], [400, 150], [500, 500]],
-    [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
-)
+# img_g = g_shading(
+#     img_g,
+#     [[20, 20], [50, 20], [500, 400]],
+#     [[1.0, 1.0, 0.0], [1.0, 1.0, 1.0], [0.9, 0.9, 0.9]],
+# )
 
-# updated_img *= 255
-# updated_img = updated_img.astype(np.uint8)
-g_img *= 255
-g_img = g_img.astype(np.uint8)
-rgb_g_img = cv2.cvtColor(g_img, cv2.COLOR_BGR2RGB)
+img_g = render_img(data["faces"], data["vertices"], data["vcolors"], data["depth"], "g")
+img_f = render_img(data["faces"], data["vertices"], data["vcolors"], data["depth"], "f")
 
-cv2.imshow("Image", rgb_g_img)
+img_g *= 255
+img_f *= 255
+
+img_g = img_g.astype(np.uint8)
+img_f = img_f.astype(np.uint8)
+
+rgb_img_g = cv2.cvtColor(img_g, cv2.COLOR_BGR2RGB)
+rgb_img_f = cv2.cvtColor(img_f, cv2.COLOR_BGR2RGB)
+
+cv2.imshow("Flat", rgb_img_g)
+cv2.imshow("Gouraud", rgb_img_f)
 # cv2.imshow("Image", updated_img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

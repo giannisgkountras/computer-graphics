@@ -24,7 +24,6 @@ def f_shading(img, vertices, vcolors):
     # Calculate the vector mean of the color
     color = [(vcolors[0][i] + vcolors[1][i] + vcolors[2][i]) / 3 for i in range(3)]
 
-    print(color)
     # Edge one is between vertex 1 and 2
     edge1 = {
         "name": "Edge 1",

@@ -173,7 +173,11 @@ def g_shading(img, vertices, vcolors):
         # Sort active points based on x
         sorted_active_points = sorted(unique_active_points, key=lambda x: x[0])
 
-        if len(active_edges) > 1:
+        # Initialise left and right color:
+        color_left = []
+        color_right = []
+
+        if len(active_edges) > 1 and len(sorted_active_points) > 1:
             if point_belongs_to_edge(sorted_active_points[0], active_edges[0]):
                 left_edge = active_edges[0]
                 right_edge = active_edges[1]
@@ -201,7 +205,12 @@ def g_shading(img, vertices, vcolors):
             )
 
         if len(sorted_active_points) == 1:
-            color = [0, 0, 0]
+            if sorted_active_points[0][0] == x1 and sorted_active_points[0][1] == y1:
+                color = vcolors[0]
+            if sorted_active_points[0][0] == x2 and sorted_active_points[0][1] == y2:
+                color = vcolors[1]
+            if sorted_active_points[0][0] == x3 and sorted_active_points[0][1] == y3:
+                color = vcolors[2]
             img[y, math.floor(sorted_active_points[0][0])] = np.array(color)
         elif len(sorted_active_points) > 1:
             for x in range(
