@@ -115,6 +115,20 @@ def f_shading(img, vertices, vcolors):
                     ]
                 )
 
+            elif active_edge["slope"] == 0 and y == y_min_total:
+                active_points.append(
+                    [
+                        active_edge["x_min"],
+                        y,
+                    ],
+                )
+                active_points.append(
+                    [
+                        active_edge["x_max"],
+                        y,
+                    ],
+                )
+
         # Remove dublicate points from active points:
         unique_active_points = []
         for point in active_points:
