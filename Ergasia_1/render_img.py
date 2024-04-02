@@ -25,7 +25,7 @@ def render_img(faces, vertices, vcolors, depth, shading):
     for face in faces:
         # Calculate triangle depth
         vertices_depth = [depth[face[0]], depth[face[1]], depth[face[2]]]
-        triangle_depth = (vertices_depth[0] + vertices_depth[2] + vertices_depth[0]) / 3
+        triangle_depth = (vertices_depth[0] + vertices_depth[1] + vertices_depth[2]) / 3
 
         # Initialise all triangles
         triangle = {
