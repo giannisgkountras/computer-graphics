@@ -31,7 +31,6 @@ def g_shading(img, vertices, vcolors):
         "slope": (y2 - y1) / (x2 - x1) if (x2 - x1) != 0 else float("inf"),
         "top_color": vcolors[0] if y1 > y2 else vcolors[1],
         "bottom_color": vcolors[1] if y1 > y2 else vcolors[0],
-        "vertices": [[x1, y1], [x2, y2]],
     }
 
     # Edge one is between vertex 2 and 3
@@ -45,7 +44,6 @@ def g_shading(img, vertices, vcolors):
         "slope": (y3 - y2) / (x3 - x2) if (x3 - x2) != 0 else float("inf"),
         "top_color": vcolors[1] if y2 > y3 else vcolors[2],
         "bottom_color": vcolors[2] if y2 > y3 else vcolors[1],
-        "vertices": [[x2, y2], [x3, y3]],
     }
 
     # Edge one is between vertex 3 and 1
@@ -59,7 +57,6 @@ def g_shading(img, vertices, vcolors):
         "slope": (y1 - y3) / (x1 - x3) if (x1 - x3) != 0 else float("inf"),
         "top_color": vcolors[2] if y3 > y1 else vcolors[0],
         "bottom_color": vcolors[0] if y3 > y1 else vcolors[2],
-        "vertices": [[x3, y3], [x1, y1]],
     }
 
     edges = [edge1, edge2, edge3]
@@ -78,7 +75,7 @@ def g_shading(img, vertices, vcolors):
     for y in range(y_min_total, y_max_total + 1):
         for edge in edges:
 
-            # Append new active edges
+            # Append new active edges if they are not horizontal
             if edge["y_min"] == y and edge["y_max"] != edge["y_min"]:
                 active_edges.append(edge)
 
@@ -160,8 +157,12 @@ def g_shading(img, vertices, vcolors):
                         active_points_colors[1][0][0],  # This is x2
                         0,  # We calculate based on x, so we give y any value, we don't care
                     ],
-                    active_points_colors[0][1], #This is the color of the left active point
-                    active_points_colors[1][1], #This is the color of the left active point
+                    active_points_colors[0][
+                        1
+                    ],  # This is the color of the left active point
+                    active_points_colors[1][
+                        1
+                    ],  # This is the color of the left active point
                     x,
                     1,
                 )

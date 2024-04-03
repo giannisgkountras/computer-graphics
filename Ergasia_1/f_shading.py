@@ -64,7 +64,7 @@ def f_shading(img, vertices, vcolors):
     for y in range(y_min_total, y_max_total + 1):
         for edge in edges:
 
-            # Append new active edges
+            # Append new active edges if they are not horizontal
             if edge["y_min"] == y and edge["y_max"] != edge["y_min"]:
                 active_edges.append(edge)
 
