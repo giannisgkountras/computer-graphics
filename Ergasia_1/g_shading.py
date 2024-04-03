@@ -20,7 +20,7 @@ def g_shading(img, vertices, vcolors):
     x2, y2 = vertices[1]
     x3, y3 = vertices[2]
 
-    # Define the edges
+    # Define the edges as dictionaries
     edge1 = {
         "name": "Edge 1",
         "x_min": min(x1, x2),
@@ -64,27 +64,44 @@ def g_shading(img, vertices, vcolors):
 
     edges = [edge1, edge2, edge3]
 
+    # Calculate the y_min and y_max of the triangle
     y_min_total = min(y1, y2, y3)
     y_max_total = max(y1, y2, y3)
 
+    # Initialise active edges as empty array
     active_edges = []
+
+    # Initialise an array that stores active points and their correspoding color
+    # This array will look like this: [[[x1,y1],[R,G,B]], [[x2,y2],[R,G,B]]]
     active_points_colors = []
 
     for y in range(y_min_total, y_max_total + 1):
-        active_edges = [edge for edge in active_edges if not (edge["y_max"] < y)]
-
         for edge in edges:
+
+            # Append new active edges
             if edge["y_min"] == y and edge["y_max"] != edge["y_min"]:
                 active_edges.append(edge)
+
+            # Remove no longer active edges
             elif edge["y_max"] == y and edge in active_edges:
                 active_edges.remove(edge)
 
+        # Reset active points colors for given y
         active_points_colors = []
 
+        # Calculate active points using the slope of the edge and current y
+        # plus their color based on the edges colors with interpolation
         for active_edge in active_edges:
+            # The color is calculated between the vectors of the edge and current y
             color = vector_interp(
-                [0, active_edge["y_min"]],  # We dont care about x
-                [0, active_edge["y_max"]],
+                [
+                    0,  # We calculate based on y, so we give x any value, we don't care
+                    active_edge["y_min"],
+                ],
+                [
+                    0,  # We calculate based on y, so we give x any value, we don't care
+                    active_edge["y_max"],
+                ],
                 active_edge["bottom_color"],
                 active_edge["top_color"],
                 y,
@@ -115,24 +132,36 @@ def g_shading(img, vertices, vcolors):
                     ]
                 )
 
+            # When slope == 0 we add no active points because the points of the horizontal
+            # edge are already calculated in the other 2 edges that contain them.
             elif active_edge["slope"] == 0 and y == y_min_total:
                 pass
 
             elif active_edge["slope"] == float("inf"):
                 active_points_colors.append([[active_edge["x_min"], y], color])
 
+        # Sort active points from leftest to rightest
         active_points_colors = sorted(active_points_colors, key=lambda x: x[0][0])
 
+        # Draw on the image for all intermediate points
         if len(active_points_colors) == 2:
+            # active_points_colors looks like this [[[x1,y1],[R,G,B]], [[x2,y2],[R,G,B]]]
+            # so [0][0][0] is x1 and [1][0][0] is x2
             for x in range(
                 round(active_points_colors[0][0][0]),
                 round(active_points_colors[1][0][0]),
             ):
                 color = vector_interp(
-                    [active_points_colors[0][0][0], 0],  # y is dont care so 0
-                    [active_points_colors[1][0][0], 0],  # y is dont care so 0
-                    active_points_colors[0][1],
-                    active_points_colors[1][1],
+                    [
+                        active_points_colors[0][0][0],  # This is x1
+                        0,  # We calculate based on x, so we give y any value, we don't care
+                    ],
+                    [
+                        active_points_colors[1][0][0],  # This is x2
+                        0,  # We calculate based on x, so we give y any value, we don't care
+                    ],
+                    active_points_colors[0][1], #This is the color of the left active point
+                    active_points_colors[1][1], #This is the color of the left active point
                     x,
                     1,
                 )

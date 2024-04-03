@@ -16,7 +16,7 @@ img = render_img(data["faces"], data["vertices"], data["vcolors"], data["depth"]
 after = time.time()
 print("Finished rendering in ", round(after - before, 2), "seconds")
 
-# Make the RGB values range from [0,255] instead of [0,1]
+# Make the RGB values range [0,255] instead of [0,1]
 img *= 255
 img = img.astype(np.uint8)
 

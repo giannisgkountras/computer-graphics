@@ -8,16 +8,18 @@ def f_shading(img, vertices, vcolors):
         vcolors (3x3 array): Each row contains the color of the corresponding point in RGB [0,1]
 
     Returns
-        MxNx3 array: The updated image with RGB for each pixel plus the old image (overlapping common pixels)
+        MxNx3 array: The updated image with RGB for each pixel of the triangle plus the old image (overlapping common pixels)
 
     """
 
+    # Calculate the color of the triangle
     color = [(vcolors[0][i] + vcolors[1][i] + vcolors[2][i]) / 3 for i in range(3)]
 
     x1, y1 = vertices[0]
     x2, y2 = vertices[1]
     x3, y3 = vertices[2]
 
+    # Define the edges as dictionaries
     edge1 = {
         "name": "Edge 1",
         "x_min": min(x1, x2),
@@ -50,23 +52,30 @@ def f_shading(img, vertices, vcolors):
 
     edges = [edge1, edge2, edge3]
 
+    # Calculate the y_min and y_max of the triangle
     y_min_total = min(y1, y2, y3)
     y_max_total = max(y1, y2, y3)
 
+    # Initialise active edges and active points as empy arrays
     active_edges = []
     active_points = []
 
+    # Implement the moving scanline
     for y in range(y_min_total, y_max_total + 1):
-        active_edges = [edge for edge in active_edges if not (edge["y_max"] < y)]
-
         for edge in edges:
+
+            # Append new active edges
             if edge["y_min"] == y and edge["y_max"] != edge["y_min"]:
                 active_edges.append(edge)
+
+            # Remove no longer active edges
             elif edge["y_max"] == y and edge in active_edges:
                 active_edges.remove(edge)
 
+        # Reset active points for given y
         active_points = []
 
+        # Calculate active points using the slope of the edge and current y
         for active_edge in active_edges:
             if active_edge["slope"] > 0:
                 active_points.append(
@@ -86,15 +95,21 @@ def f_shading(img, vertices, vcolors):
                     ]
                 )
 
+            # When slope == 0 we add no active points because the points of the horizontal
+            # edge are already calculated in the other 2 edges that contain them.
             elif active_edge["slope"] == 0 and y == y_min_total:
                 pass
 
             elif active_edge["slope"] == float("inf"):
                 active_points.append([active_edge["x_min"], y])
 
+        # Sort active points from leftest to rightest
         active_points = sorted(active_points, key=lambda x: x[0])
 
+        # Draw on the image for all intermediate points
         if len(active_points) == 2:
+            # The array active_points looks like this: [[x1,y1],[x2,y2]]
+            # The range of the loop is from x1 to x2
             for x in range(round(active_points[0][0]), round(active_points[1][0])):
                 img[y][x] = color
     return img

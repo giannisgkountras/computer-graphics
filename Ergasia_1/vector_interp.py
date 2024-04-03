@@ -30,8 +30,7 @@ def vector_interp(p1, p2, V1, V2, coord, dim):
             V_right = V2
 
         else:
-            # In the case of p2 beeing more left than p1 we name x1
-            # the x coordinate of p2 and also swap the vectors
+            # In the case of p2 beeing more left than p1 we name x1 the x coordinate of p2 and also swap the vectors
             x1 = p2[0]
             x2 = p1[0]
             V_left = V2
@@ -40,8 +39,7 @@ def vector_interp(p1, p2, V1, V2, coord, dim):
         # Calculate the distance between the points on the x axis
         width = x2 - x1
 
-        # Calculate what percentage of width is the distance on the
-        # x axis between p and the most left point
+        # Calculate what percentage of width is the distance on the x axis between p and the most left point
         percentage = (coord - x1) / width
 
         # Calculate the final vector by doing a linear interpolation
