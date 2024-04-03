@@ -1,14 +1,16 @@
 import cv2
 import numpy as np
-
+import time
 from render_img import render_img
 
 # Load the data
 data = np.load("hw1.npy", allow_pickle=True).item()
 
+before = time.time()
 # Use the function to create an image
 img = render_img(data["faces"], data["vertices"], data["vcolors"], data["depth"], "f")
-
+after = time.time()
+print(after - before)
 # Make the RGB values range from [0,255] instead of [0,1]
 img *= 255
 img = img.astype(np.uint8)
