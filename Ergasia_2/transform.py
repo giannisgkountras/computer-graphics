@@ -30,7 +30,8 @@ class Transform:
             + np.cos(theta) * np.eye(3)
             + np.sin(theta) * np.array([[0, -uz, uy], [uz, 0, -ux], [-uy, ux, 0]])
         )
-        R_h = [[R, np.zeros((3, 1))], [np.zeros((1, 3)), 1]]
+        # R_h = [[R, np.zeros((3, 1))], [np.zeros((1, 3)), 1]]
+        R_h = np.block([[R, np.zeros((3, 1))], [np.zeros((1, 3)), 1]])
 
         self.mat = R_h
 
@@ -49,11 +50,3 @@ class Transform:
             pts[i] = np.delete(updated_point_h, -1)
 
         return pts
-
-
-metasx = Transform()
-
-metasx.rotate(2 * np.pi, [0, 1, 0])
-
-
-print(metasx.transform_pts([[0, 0, 0]]))
