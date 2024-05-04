@@ -12,9 +12,16 @@ def lookat(
     z_camera = target - eye
     z_camera_norm = z_camera / np.linalg.norm(z_camera)
 
-    t = up - np.dot(up, z_camera_norm) * z_camera_norm
+    # Ensure up vector is a column vector
+    up = np.reshape(up, (3, 1))
+
+    # Calculate the translation vector directly
+    t = up - np.dot(up.T, z_camera_norm) * z_camera_norm
 
     y_camera_norm = t / np.linalg.norm(t)
+
+    z_camera_norm = z_camera_norm.flatten()
+    y_camera_norm = y_camera_norm.flatten()
 
     x_camera_norm = np.cross(z_camera_norm, y_camera_norm)
 
