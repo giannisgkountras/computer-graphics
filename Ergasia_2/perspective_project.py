@@ -22,10 +22,10 @@ def perspective_project(
     return projected_points
 
 
-pts = np.array(
-    [[2, 2, 5], [1, 1, 3], [3, 3, 4]]
-)  # Three points: [2, 2, 5], [1, 1, 3], and [3, 3, 4]
-focal = 2  # Focal length
-R = np.eye(3)  # Identity rotation matrix
-t = np.array([0, 0, 1])  # Translation vector
-print(perspective_project(pts, focal, R, t))
+# pts = np.array(
+#     [[2, 2, 5], [1, 1, 3], [3, 3, 4]]
+# )  # Three points: [2, 2, 5], [1, 1, 3], and [3, 3, 4]
+# focal = 2  # Focal length
+# R = np.eye(3)  # Identity rotation matrix
+# t = np.array([0, 0, 1])  # Translation vector
+# print(perspective_project(pts, focal, R, t))
