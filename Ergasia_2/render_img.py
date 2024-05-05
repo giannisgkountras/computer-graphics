@@ -24,28 +24,28 @@ def render_img(faces, vertices, vcolors, depth, shading):
     triangles = []
     for face in faces:
         # Calculate triangle depth
-        # vertices_depth = [depth[face[0]], depth[face[1]], depth[face[2]]]
-        # triangle_depth = (vertices_depth[0] + vertices_depth[1] + vertices_depth[2]) / 3
+        vertices_depth = [depth[face[0]], depth[face[1]], depth[face[2]]]
+        triangle_depth = (vertices_depth[0] + vertices_depth[1] + vertices_depth[2]) / 3
 
         # Initialise all triangles
         triangle = {
             "vertices": [vertices[face[0]], vertices[face[1]], vertices[face[2]]],
             "color": [vcolors[face[0]], vcolors[face[1]], vcolors[face[2]]],
-            # "depth": triangle_depth,
+            "depth": triangle_depth,
         }
 
         # Keep all triangles in an array
         triangles.append(triangle)
 
     # Sort the array of triangles based on depth (far first)
-    # triangles_sorted = sorted(triangles, key=lambda x: x["depth"], reverse=True)
+    triangles_sorted = sorted(triangles, key=lambda x: x["depth"], reverse=True)
 
     # Render the image based on the shading method
     if shading == "f":
-        for triangle in triangles:
+        for triangle in triangles_sorted:
             img = f_shading(img, triangle["vertices"], triangle["color"])
     elif shading == "g":
-        for triangle in triangles:
+        for triangle in triangles_sorted:
 
             img = g_shading(img, triangle["vertices"], triangle["color"])
     else:

@@ -8,6 +8,7 @@ def perspective_project(
     np.ndarray, np.ndarray
 ]:  # Project the specified 3d points pts on the image plane, according to a pinhole perspective projection model.
     pts_camera_world = world2view(pts, R, t)
+    z_values = [sub_array[2] for sub_array in pts_camera_world]
     projected_points = np.empty((0, 2))
     for point in pts_camera_world:
         projected_x = (np.multiply(focal, point[0])) / point[2]
@@ -19,7 +20,7 @@ def perspective_project(
             [projected_points, projected_point]
         )  # Append the projected point array
 
-    return projected_points
+    return projected_points, z_values
 
 
 # pts = np.array(
