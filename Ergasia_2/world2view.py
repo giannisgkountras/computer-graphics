@@ -11,7 +11,7 @@ def world2view(pts: np.ndarray, R: np.ndarray, c0: np.ndarray) -> np.ndarray:
     transformed_pts = []
 
     for point in pts:
-        transformed_point = np.dot(R, point)
+        transformed_point = np.dot(R.T, point)
         transformed_point = transformed_point + c0
         transformed_pts.append(transformed_point)
 

@@ -22,7 +22,7 @@ def lookat(
 
     x_camera_norm = np.cross(y_camera_norm, z_camera_norm)
 
-    R = np.array([x_camera_norm, y_camera_norm, z_camera_norm]).T
+    R = np.array([x_camera_norm, y_camera_norm, z_camera_norm])
 
     translation_vector = eye
 
