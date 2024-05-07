@@ -8,17 +8,14 @@ def world2view(pts: np.ndarray, R: np.ndarray, c0: np.ndarray) -> np.ndarray:
     # (w.r.t. to the world frame)
 
     pts = pts.T
+    transformed_pts = []
 
     for point in pts:
-        point = np.dot(R, point.T).T
-        point = point + c0
+        transformed_point = np.dot(R, point)
+        transformed_point = transformed_point + c0
+        transformed_pts.append(transformed_point)
 
-    # transformed_pts = np.dot(R, pts.T).T
-
-    # # Translate points by subtracting camera's point of reference
-    # translated_pts = transformed_pts + c0
-
-    return pts
+    return np.array(transformed_pts)
 
 
 # pts = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # Three points
