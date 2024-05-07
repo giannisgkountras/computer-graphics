@@ -30,23 +30,23 @@ class Transform:
             + np.cos(theta) * np.eye(3)
             + np.sin(theta) * np.array([[0, -uz, uy], [uz, 0, -ux], [-uy, ux, 0]])
         )
-        # R_h = [[R, np.zeros((3, 1))], [np.zeros((1, 3)), 1]]
         R_h = np.block([[R, np.zeros((3, 1))], [np.zeros((1, 3)), 1]])
-
-        self.mat = R_h
+        self.mat = np.dot(R_h, self.mat)
 
     # translate the transformation matrix.
     def translate(self, t: np.ndarray) -> None:
         # Make the t vector homogeneous
-        t_homogeneous = np.append(t, 0)
-        self.mat[:, -1] = t_homogeneous
+        T = np.eye(4)
+        T[:3, 3] = t
+        self.mat = np.dot(T, self.mat)
 
-    # transform the specified points
-    # according to our current matrix.
     def transform_pts(self, pts: np.ndarray) -> np.ndarray:
-        for i, point in enumerate(pts):
+        # Convert points to homogeneous coordinates
+        transformed_pts = []
+        for point in pts.T:
             point_h = np.append(point, 1)
             updated_point_h = np.dot(self.mat, point_h)
-            pts[i] = np.delete(updated_point_h, -1)
+            updated_point_h = np.delete(updated_point_h, -1)
+            transformed_pts.append(updated_point_h)
 
-        return pts
+        return np.array(transformed_pts).T
