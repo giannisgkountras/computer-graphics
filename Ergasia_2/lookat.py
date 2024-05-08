@@ -29,6 +29,7 @@ def lookat(
     # Save them all in a matrix
     R = np.array([x_camera_norm, y_camera_norm, z_camera_norm])
 
+    # Set the translation vector to be the center of the camera
     translation_vector = eye
 
     return R, translation_vector

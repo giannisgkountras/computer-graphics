@@ -14,16 +14,18 @@ def perspective_project(
     # Save the depths of the points
     z_values = [sub_array[2] for sub_array in pts_camera_world]
 
-    # Project all points on the camera
-    projected_points = np.empty((0, 2))
+    # Initialise empty array for projected points
+    projected_points = []
+
+    # Calculate x and y for all points
     for point in pts_camera_world:
         projected_x = np.multiply(focal / point[2], point[0])
         projected_y = np.multiply(focal / point[2], point[1])
-        projected_point = np.array(
-            [[projected_x, projected_y]]
-        )  # Create a 2D array for the projected point
-        projected_points = np.vstack(
-            [projected_points, projected_point]
-        )  # Append the projected point array
+
+        # Append the projected point array
+        projected_points.append([projected_x, projected_y])
+
+    # Make projected points a numpy array
+    projected_points = np.array(projected_points)
 
     return projected_points, z_values

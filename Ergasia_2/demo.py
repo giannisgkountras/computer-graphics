@@ -42,7 +42,10 @@ rgb_img_step_0 = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 # Set start time
 start = time.time()
 
+# Initialise Transform object
 transform = Transform()
+
+# Update points based on the desired transformation
 transform.rotate(data["theta_0"], data["rot_axis_0"])
 updated_points = transform.transform_pts(data["v_pos"])
 
@@ -73,12 +76,14 @@ rgb_img_step_1 = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
 
 # ===================== STEP 2 ======================#
-transform.translate(data["t_0"])
-updated_points = transform.transform_pts(data["v_pos"])
-
-
 # Set start time
 start = time.time()
+
+# Update points based on the desired transformation
+transform.translate(data["t_0"])
+# v_pos is used as input because the transformations stack, because we use the same
+# object of the Transform class
+updated_points = transform.transform_pts(data["v_pos"])
 
 # Use the function to create an image
 img = render_object(
@@ -113,6 +118,7 @@ rgb_img_step_2 = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 # Set start time
 start = time.time()
 
+# Update points based on the desired transformation
 transform.translate(data["t_1"])
 updated_points = transform.transform_pts(data["v_pos"])
 
