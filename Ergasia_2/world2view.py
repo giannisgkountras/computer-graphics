@@ -12,11 +12,8 @@ def world2view(pts: np.ndarray, R: np.ndarray, c0: np.ndarray) -> np.ndarray:
 
     # Transform all points (use transpose in order to acces points one by one)
     for point in pts.T:
-        # Rotate the point
-        transformed_point = np.dot(R.T, point)
-
-        # Transpose the point
-        transformed_point = transformed_point + c0
+        # Rotate and translate the point
+        transformed_point = np.dot(R, (point - c0))
 
         # Append updated point to the array
         transformed_pts.append(transformed_point)

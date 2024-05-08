@@ -15,9 +15,6 @@ class Transform:
 
     # rotate the transformation matrix
     def rotate(self, theta: float, u: np.ndarray) -> None:
-        # Reverse theta in order to perform right rotation
-        theta = -theta
-
         # Initialise ux uy and uz from u
         ux = u[0]
         uy = u[1]
@@ -39,6 +36,9 @@ class Transform:
 
         # Make R homogeneous
         R_h = np.block([[R, np.zeros((3, 1))], [np.zeros((1, 3)), 1]])
+
+        # Transpose the matrix because we want right rotation
+        R_h = R_h.T
 
         # Update self.mat
         self.mat = np.dot(R_h, self.mat)
