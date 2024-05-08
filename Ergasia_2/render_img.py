@@ -20,7 +20,7 @@ def render_img(faces, vertices, vcolors, depth, shading):
     # Initialise the image as a 512 by 512 array with white color
     img = np.ones((512, 512, 3), dtype=float)
 
-    print("Loading...")
+    print("Rendering...")
     triangles = []
     for face in faces:
         # Calculate triangle depth

@@ -8,10 +8,13 @@ def lookat(
     # by a rotation matrix R, and a translation vector t).
     # :return a tuple containing the rotation matrix R (3 x 3) and a translation vector
     # t (1 x 3)
+
+    # Flatten all arrays for easier calculations
     eye = eye.flatten()
     up = up.flatten()
     target = target.flatten()
 
+    # Calculate the z of the camera
     z_camera = target - eye
     z_camera_norm = z_camera / np.linalg.norm(z_camera)
 
@@ -20,21 +23,12 @@ def lookat(
 
     y_camera_norm = t / np.linalg.norm(t)
 
+    # Find x using the cross product of the other 2 vectors
     x_camera_norm = np.cross(y_camera_norm, z_camera_norm)
 
+    # Save them all in a matrix
     R = np.array([x_camera_norm, y_camera_norm, z_camera_norm])
 
     translation_vector = eye
 
     return R, translation_vector
-
-
-# eye = np.array([15, 15, 1.5])
-# up = np.array([0, 0, 1])
-# target = np.array([30, 30, 4])
-
-# R, t = lookat(eye, up, target)
-# print("Rotation matrix R:")
-# print(R)
-# print("Translation vector t:")
-# print(t)

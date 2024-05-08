@@ -7,22 +7,18 @@ def world2view(pts: np.ndarray, R: np.ndarray, c0: np.ndarray) -> np.ndarray:
     # is specified rotation (w.r.t. the world frame) and its point of reference
     # (w.r.t. to the world frame)
 
-    pts = pts.T
+    # Initialise empty array for the transformed points
     transformed_pts = []
 
-    for point in pts:
+    # Transform all points (use transpose in order to acces points one by one)
+    for point in pts.T:
+        # Rotate the point
         transformed_point = np.dot(R.T, point)
+
+        # Transpose the point
         transformed_point = transformed_point + c0
+
+        # Append updated point to the array
         transformed_pts.append(transformed_point)
 
     return np.array(transformed_pts)
-
-
-# pts = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])  # Three points
-# R = np.eye(3)  # Identity rotation matrix (no rotation)
-# c0 = np.array([0, 0, 0])  # Camera at the origin
-
-# # Call the world2view function
-# result = world2view(pts, R, c0)
-
-# print(result)
