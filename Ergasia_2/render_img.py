@@ -1,5 +1,4 @@
 import numpy as np
-from f_shading import f_shading
 from g_shading import g_shading
 
 
@@ -41,10 +40,7 @@ def render_img(faces, vertices, vcolors, depth, shading):
     triangles_sorted = sorted(triangles, key=lambda x: x["depth"], reverse=True)
 
     # Render the image based on the shading method
-    if shading == "f":
-        for triangle in triangles_sorted:
-            img = f_shading(img, triangle["vertices"], triangle["color"])
-    elif shading == "g":
+    if shading == "g":
         for triangle in triangles_sorted:
 
             img = g_shading(img, triangle["vertices"], triangle["color"])
