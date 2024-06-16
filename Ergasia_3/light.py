@@ -1,21 +1,21 @@
 import numpy as np
 
 
-def light(point, normal, vcolor, cam_pos, ka, kd, ks, n, lpos, lint):
+def light(point, normal, vcolor, cam_pos, ka, kd, ks, n, lpos, lint, lamb):
 
     # View vector (from point to camera)
     view_vector = cam_pos - point
     view_vector = view_vector / np.linalg.norm(view_vector)
 
     # Ambient component
-    ambient = ka * vcolor
+    ambient = ka * lamb
 
     # Initialize the final color with the ambient component
     I = np.zeros(3)
     I += ambient
 
     # Process each light source
-    for i in range(lpos.shape[0]):
+    for i in range(np.array(lpos).shape[0]):
         # Light position and intensity
         light_pos = lpos[i]
         light_intensity = lint[i]
