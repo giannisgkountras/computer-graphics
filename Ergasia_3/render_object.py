@@ -66,6 +66,7 @@ def render_object(
             "color": vertsc,
             "depth": triangle_depth,
             "points_2d": verts_2d,
+            "bcoords": bcoords,
         }
 
         # Keep all triangles in an array
@@ -81,7 +82,7 @@ def render_object(
                 triangle["vertices"],
                 triangle["normals"],
                 triangle["color"],
-                bcoords,
+                triangle["bcoords"],
                 cam_pos,
                 ka,
                 kd,
