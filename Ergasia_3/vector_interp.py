@@ -79,4 +79,5 @@ def vector_interp(p1, p2, V1, V2, coord, dim):
         # on the most down point, we use (1 - percentage) for V_down
         V = np.add(np.multiply((1 - percentage), V_down), np.multiply(percentage, V_up))
 
-    return V
+    V_clamped = np.clip(V, 0, 1)
+    return V_clamped
