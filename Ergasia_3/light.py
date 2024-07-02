@@ -26,7 +26,7 @@ def light(point, normal, vcolor, cam_pos, ka, kd, ks, n, lpos, lint, lamb):
 
         # Diffuse component
         diff = max(np.dot(normal, light_vector), 0)
-        diffuse = kd * diff * vcolor * light_intensity
+        diffuse = kd * diff * light_intensity
 
         # Reflect vector (for specular component)
         reflect_vector = 2 * np.dot(normal, light_vector) * normal - light_vector
@@ -40,6 +40,7 @@ def light(point, normal, vcolor, cam_pos, ka, kd, ks, n, lpos, lint, lamb):
         I += diffuse + specular
 
     # Ensure the final intensity is within the range [0, 1]
+    I = I * vcolor
     I = np.clip(I, 0, 1)
 
     return I
