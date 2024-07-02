@@ -1,6 +1,5 @@
 from g_shading import g_shading
 from light import light
-from rasterize import rasterize
 
 
 def shade_gouraud(
@@ -22,9 +21,11 @@ def shade_gouraud(
 
     colors = []
 
-    for i, point in enumerate(vertsp):
+    for i in range(len(vertsp)):
 
-        I = light(point, vertsn[i], vertsc[i], cam_pos, ka, kd, ks, n, lpos, lint, lamb)
+        I = light(
+            bcoords, vertsn[i], vertsc[i], cam_pos, ka, kd, ks, n, lpos, lint, lamb
+        )
         colors.append(I)
 
     X = g_shading(X, points_2d, colors)

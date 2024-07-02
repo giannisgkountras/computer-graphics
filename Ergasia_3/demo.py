@@ -276,6 +276,34 @@ cv2.imwrite("./Results/Gouraud All Source 1.jpg", img_all_gouraud_source1)
 cv2.imwrite("./Results/Gouraud All Source 2.jpg", img_all_gouraud_source2)
 cv2.imwrite("./Results/Gouraud All Source 3.jpg", img_all_gouraud_source3)
 
+
+img_all_phong = render_object(
+    "phong",
+    data["focal"],
+    data["cam_eye"],
+    data["cam_lookat"],
+    data["cam_up"],
+    data["bg_color"],
+    data["M"],
+    data["N"],
+    data["H"],
+    data["W"],
+    data["verts"],
+    data["vertex_colors"],
+    data["face_indices"],
+    data["ka"],
+    data["kd"],
+    data["ks"],
+    data["n"],
+    data["light_positions"],
+    data["light_intensities"],
+    data["Ia"],
+)
+
+img_all_phong = prepareImgForOpenCV(img_all_phong)
+cv2.imshow("Phong All Lighting All Sources", img_all_phong)
+cv2.imwrite("./Results/Phong All Lighting All Sources.jpg", img_all_phong)
+
 cv2.waitKey(0)
 
 

@@ -4,6 +4,7 @@ from perspective_project import perspective_project
 from lookat import lookat
 from rasterize import rasterize
 from shade_gouraud import shade_gouraud
+from shade_phong import shade_phong
 
 
 def render_object(
@@ -79,6 +80,24 @@ def render_object(
     if shader == "gouraud":
         for triangle in triangles_sorted:
             img = shade_gouraud(
+                triangle["vertices"],
+                triangle["normals"],
+                triangle["color"],
+                triangle["bcoords"],
+                cam_pos,
+                ka,
+                kd,
+                ks,
+                n,
+                lpos,
+                lint,
+                lamb,
+                img,
+                triangle["points_2d"],
+            )
+    elif shader == "phong":
+        for triangle in triangles_sorted:
+            img = shade_phong(
                 triangle["vertices"],
                 triangle["normals"],
                 triangle["color"],
