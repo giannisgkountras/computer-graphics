@@ -31,12 +31,3 @@ def calculate_normals(verts, faces):
         normals[idx3] = face_normal
 
     return np.array(normals)
-
-
-# Example usage:
-# verts = np.array([[1.0, 0.0, 0.0], [7.0, 0.0, 0.0], [0.0, 5.0, 0.0], [0, 10, 0]])
-
-# faces = np.array([[0, 1, 2], [1, 2, 3]])
-
-# normals = calculate_normals(verts, faces)
-# print("Normals:\n", normals)
