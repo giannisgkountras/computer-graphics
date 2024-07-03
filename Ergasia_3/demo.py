@@ -267,6 +267,7 @@ cv2.waitKey(100)
 cv2.imshow("Gouraud All Source 2", img_all_gouraud_source2)
 cv2.waitKey(100)
 cv2.imshow("Gouraud All Source 3", img_all_gouraud_source3)
+cv2.waitKey(100)
 
 cv2.imwrite("./Results/Gouraud Ambient.jpg", img_ambient_gouraud)
 cv2.imwrite("./Results/Gouraud Diffuse.jpg", img_diff_gouraud)
@@ -277,6 +278,7 @@ cv2.imwrite("./Results/Gouraud All Source 2.jpg", img_all_gouraud_source2)
 cv2.imwrite("./Results/Gouraud All Source 3.jpg", img_all_gouraud_source3)
 
 
+start = time.time()
 img_all_phong = render_object(
     "phong",
     data["focal"],
@@ -298,6 +300,13 @@ img_all_phong = render_object(
     data["light_positions"],
     data["light_intensities"],
     data["Ia"],
+)
+end = time.time()
+
+print(
+    "Render with Phong Shading and All Lighting Sources finished in",
+    round(end - start, 2),
+    "seconds.",
 )
 
 img_all_phong = prepareImgForOpenCV(img_all_phong)
