@@ -28,10 +28,15 @@ def render_object(
     lpos,
     lint,
     lamb,
+    uvs,
+    face_uv_indices,
+    texture_map,
 ):
     vert_colors = vert_colors.T
     verts = verts.T
     faces = faces.T
+    uvs = uvs.T
+    face_uv_indices = face_uv_indices.T
 
     img = np.ones((M, N, 3), dtype=float)
 
@@ -60,6 +65,7 @@ def render_object(
         bcoords = (verts[face[0]] + verts[face[1]] + verts[face[2]]) / 3
         cam_pos = eye
         verts_2d = [points_2d[face[0]], points_2d[face[1]], points_2d[face[2]]]
+
         # Initialise all triangles
         triangle = {
             "vertices": vertsp,
@@ -72,6 +78,11 @@ def render_object(
 
         # Keep all triangles in an array
         triangles.append(triangle)
+
+    for i, uv in enumerate(face_uv_indices):
+        triangle_uvs = [uvs[uv[0]], uvs[uv[1]], uvs[uv[2]]]
+
+        triangles[i]["uvs"] = triangle_uvs
 
     # Sort the array of triangles based on depth (far first)
     triangles_sorted = sorted(triangles, key=lambda x: x["depth"], reverse=True)
@@ -94,6 +105,8 @@ def render_object(
                 lamb,
                 img,
                 triangle["points_2d"],
+                triangle["uvs"],
+                texture_map,
             )
     elif shader == "phong":
         for triangle in triangles_sorted:
@@ -112,6 +125,8 @@ def render_object(
                 lamb,
                 img,
                 triangle["points_2d"],
+                triangle["uvs"],
+                texture_map,
             )
 
     return img

@@ -1,4 +1,6 @@
 from vector_interp import vector_interp
+from bilerp import bilerp
+from light import light
 
 
 def g_shading(img, vertices, vcolors):
@@ -135,14 +137,14 @@ def g_shading(img, vertices, vcolors):
                 pass
 
             elif active_edge["slope"] == float("inf"):
-                active_points_colors.append([[active_edge["x_min"], y], color])
+                active_points_colors.append([[active_edge["x_min"], y], color, uv])
 
         # Sort active points from leftest to rightest
         active_points_colors = sorted(active_points_colors, key=lambda x: x[0][0])
 
         # Draw on the image for all intermediate points
         if len(active_points_colors) == 2:
-            # active_points_colors looks like this [[[x1,y1],[R,G,B]], [[x2,y2],[R,G,B]]]
+            # active_points_colors looks like this [[[x1,y1],[R,G,B], uv], [[x2,y2],[R,G,B], uv]]
             # so [0][0][0] is x1 and [1][0][0] is x2
             for x in range(
                 round(active_points_colors[0][0][0]),
@@ -166,6 +168,7 @@ def g_shading(img, vertices, vcolors):
                     x,
                     1,
                 )
+
                 img[y][x] = color
 
     return img

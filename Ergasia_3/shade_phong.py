@@ -1,5 +1,6 @@
 from light import light
 from vector_interp import vector_interp, normal_interp
+from bilerp import bilerp
 
 
 def shade_phong(
@@ -17,6 +18,8 @@ def shade_phong(
     lamb,
     X,
     points_2d,
+    uvs,
+    texture_map,
 ):
     colors = []
 
@@ -51,6 +54,8 @@ def shade_phong(
         # ADDED NORMAL VECTORS INFORMATION
         "top_normal": vertsn[0] if y1 > y2 else vertsn[1],
         "bottom_normal": vertsn[1] if y1 > y2 else vertsn[0],
+        "top_uv": uvs[0] if y1 > y2 else uvs[1],
+        "bottom_uv": uvs[1] if y1 > y2 else uvs[0],
     }
 
     # Edge one is between vertex 2 and 3
@@ -67,6 +72,8 @@ def shade_phong(
         # ADDED NORMAL VECTORS INFORMATION
         "top_normal": vertsn[1] if y2 > y3 else vertsn[2],
         "bottom_normal": vertsn[2] if y2 > y3 else vertsn[1],
+        "top_uv": uvs[1] if y1 > y2 else uvs[2],
+        "bottom_uv": uvs[2] if y1 > y2 else uvs[1],
     }
 
     # Edge one is between vertex 3 and 1
@@ -83,6 +90,8 @@ def shade_phong(
         # ADDED NORMAL VECTORS INFORMATION
         "top_normal": vertsn[2] if y3 > y1 else vertsn[0],
         "bottom_normal": vertsn[0] if y3 > y1 else vertsn[2],
+        "top_uv": uvs[2] if y1 > y2 else uvs[0],
+        "bottom_uv": uvs[0] if y1 > y2 else uvs[2],
     }
 
     edges = [edge1, edge2, edge3]
@@ -147,6 +156,21 @@ def shade_phong(
                 2,
             )
 
+            uv = vector_interp(
+                [
+                    0,  # We calculate based on y, so we give x any value, we don't care
+                    active_edge["y_min"],
+                ],
+                [
+                    0,  # We calculate based on y, so we give x any value, we don't care
+                    active_edge["y_max"],
+                ],
+                active_edge["bottom_uv"],
+                active_edge["top_uv"],
+                y,
+                2,
+            )
+
             if active_edge["slope"] > 0:
                 active_points_colors.append(
                     [
@@ -157,6 +181,7 @@ def shade_phong(
                         ],
                         color,
                         normal,
+                        uv,
                     ]
                 )
 
@@ -170,6 +195,7 @@ def shade_phong(
                         ],
                         color,
                         normal,
+                        uv,
                     ]
                 )
 
@@ -179,7 +205,9 @@ def shade_phong(
                 pass
 
             elif active_edge["slope"] == float("inf"):
-                active_points_colors.append([[active_edge["x_min"], y], color, normal])
+                active_points_colors.append(
+                    [[active_edge["x_min"], y], color, normal, uv]
+                )
 
         # Sort active points from leftest to rightest
         active_points_colors = sorted(active_points_colors, key=lambda x: x[0][0])
@@ -230,8 +258,38 @@ def shade_phong(
                     1,
                 )
 
+                uv = vector_interp(
+                    [
+                        active_points_colors[0][0][0],  # This is x1
+                        0,  # We calculate based on x, so we give y any value, we don't care
+                    ],
+                    [
+                        active_points_colors[1][0][0],  # This is x2
+                        0,  # We calculate based on x, so we give y any value, we don't care
+                    ],
+                    active_points_colors[0][
+                        3
+                    ],  # This is the uv of the left active point
+                    active_points_colors[1][
+                        3
+                    ],  # This is the uv of the right active point
+                    x,
+                    1,
+                )
+                texture_color = bilerp(uv, texture_map)
+
                 I = light(
-                    bcoords, normal, color, cam_pos, ka, kd, ks, n, lpos, lint, lamb
+                    bcoords,
+                    normal,
+                    texture_color,
+                    cam_pos,
+                    ka,
+                    kd,
+                    ks,
+                    n,
+                    lpos,
+                    lint,
+                    lamb,
                 )
 
                 img[y][x] = I

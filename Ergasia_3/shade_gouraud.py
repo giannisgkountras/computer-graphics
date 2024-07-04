@@ -1,5 +1,6 @@
 from g_shading import g_shading
 from light import light
+from bilerp import bilerp
 
 
 def shade_gouraud(
@@ -17,14 +18,28 @@ def shade_gouraud(
     lamb,
     X,
     points_2d,
+    uvs,
+    texture_map,
 ):
 
     colors = []
 
+    texture_colors = [bilerp(uv, texture_map) for uv in uvs]
+
     for i in range(len(vertsp)):
 
         I = light(
-            bcoords, vertsn[i], vertsc[i], cam_pos, ka, kd, ks, n, lpos, lint, lamb
+            bcoords,
+            vertsn[i],
+            texture_colors[i],
+            cam_pos,
+            ka,
+            kd,
+            ks,
+            n,
+            lpos,
+            lint,
+            lamb,
         )
         colors.append(I)
 
