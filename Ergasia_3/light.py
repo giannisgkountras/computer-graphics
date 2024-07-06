@@ -6,7 +6,7 @@ def light(point, normal, vcolor, cam_pos, ka, kd, ks, n, lpos, lint, lamb):
     # View vector (from point to camera)
     view_vector = cam_pos - point
     view_vector = view_vector / np.linalg.norm(view_vector)
-
+    vcolor = np.clip(vcolor, 0, 1)
     # Ambient component
     ambient = ka * lamb * vcolor
 
@@ -37,6 +37,7 @@ def light(point, normal, vcolor, cam_pos, ka, kd, ks, n, lpos, lint, lamb):
         specular = ks * (spec**n) * light_intensity
 
         # Add the contributions of this light source
+
         I += diffuse * vcolor + specular * vcolor
 
     # Ensure the final intensity is within the range [0, 1]

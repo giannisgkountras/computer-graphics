@@ -21,14 +21,8 @@ def shade_phong(
     uvs,
     texture_map,
 ):
-    colors = []
-
-    for i in range(len(vertsp)):
-
-        I = light(
-            bcoords, vertsn[i], vertsc[i], cam_pos, ka, kd, ks, n, lpos, lint, lamb
-        )
-        colors.append(I)
+    # Color no longer needed since we use texture map
+    colors = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
     img = X
     vertices = points_2d
@@ -125,20 +119,23 @@ def shade_phong(
         # plus their color based on the edges colors with interpolation
         for active_edge in active_edges:
             # The color is calculated between the vectors of the edge and current y
-            color = vector_interp(
-                [
-                    0,  # We calculate based on y, so we give x any value, we don't care
-                    active_edge["y_min"],
-                ],
-                [
-                    0,  # We calculate based on y, so we give x any value, we don't care
-                    active_edge["y_max"],
-                ],
-                active_edge["bottom_color"],
-                active_edge["top_color"],
-                y,
-                2,
-            )
+            # No longer needed because of texture map
+
+            color = [0, 0, 0]
+            # color = vector_interp(
+            #     [
+            #         0,  # We calculate based on y, so we give x any value, we don't care
+            #         active_edge["y_min"],
+            #     ],
+            #     [
+            #         0,  # We calculate based on y, so we give x any value, we don't care
+            #         active_edge["y_max"],
+            #     ],
+            #     active_edge["bottom_color"],
+            #     active_edge["top_color"],
+            #     y,
+            #     2,
+            # )
 
             # INTERPOLATE FOR THE NORMAL TOO
             normal = normal_interp(
@@ -220,24 +217,25 @@ def shade_phong(
                 round(active_points_colors[0][0][0]),
                 round(active_points_colors[1][0][0]),
             ):
-                color = vector_interp(
-                    [
-                        active_points_colors[0][0][0],  # This is x1
-                        0,  # We calculate based on x, so we give y any value, we don't care
-                    ],
-                    [
-                        active_points_colors[1][0][0],  # This is x2
-                        0,  # We calculate based on x, so we give y any value, we don't care
-                    ],
-                    active_points_colors[0][
-                        1
-                    ],  # This is the color of the left active point
-                    active_points_colors[1][
-                        1
-                    ],  # This is the color of the right active point
-                    x,
-                    1,
-                )
+                # No longer needed because of texture map
+                # color = vector_interp(
+                #     [
+                #         active_points_colors[0][0][0],  # This is x1
+                #         0,  # We calculate based on x, so we give y any value, we don't care
+                #     ],
+                #     [
+                #         active_points_colors[1][0][0],  # This is x2
+                #         0,  # We calculate based on x, so we give y any value, we don't care
+                #     ],
+                #     active_points_colors[0][
+                #         1
+                #     ],  # This is the color of the left active point
+                #     active_points_colors[1][
+                #         1
+                #     ],  # This is the color of the right active point
+                #     x,
+                #     1,
+                # )
 
                 normal = normal_interp(
                     [
