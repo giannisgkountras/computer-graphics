@@ -15,10 +15,10 @@ def bilerp(uv, texture_map):
     x = u * (width - 1)
     y = v * (height - 1)
 
-    x1 = int(np.floor(x))
-    x2 = min(x1 + 1, width - 1)
-    y1 = int(np.floor(y))
-    y2 = min(y1 + 1, height - 1)
+    x1 = np.floor(x).astype(int)
+    x2 = np.ceil(x).astype(int)
+    y1 = np.floor(y).astype(int)
+    y2 = np.ceil(y).astype(int)
 
     # Calculate the fractional parts
     dx = x - x1
