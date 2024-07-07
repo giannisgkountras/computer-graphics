@@ -26,8 +26,13 @@ def calculate_normals(verts, faces):
         face_normal = face_normal / np.linalg.norm(face_normal)
 
         # Add the face normal to each of the triangle's vertices' normals
-        normals[idx1] = face_normal
-        normals[idx2] = face_normal
-        normals[idx3] = face_normal
+        normals[idx1] += face_normal
+        normals[idx2] += face_normal
+        normals[idx3] += face_normal
 
+    # Normalize the accumulated normals for each vertex, skipping zero normals
+    normals = [
+        normal / np.linalg.norm(normal) if np.linalg.norm(normal) != 0 else normal
+        for normal in normals
+    ]
     return np.array(normals)

@@ -31,13 +31,9 @@ def bilerp(uv, texture_map):
     Q22 = texture_map[y2, x2]
 
     # Perform the bilinear interpolation
-    R1 = (1 - dx) * Q11 + dx * Q21
-    R1 = np.clip(R1, 0, 1)
-
-    R2 = (1 - dx) * Q12 + dx * Q22
-    R2 = np.clip(R2, 0, 1)
-
-    P = (1 - dy) * R1 + dy * R2
+    R1 = (1 - dy) * Q11 + dy * Q12
+    R2 = (1 - dy) * Q21 + dy * Q22
+    P = (1 - dx) * R1 + dx * R2
 
     # Clip values to ensure they are within [0, 1]
     P = np.clip(P, 0, 1)
