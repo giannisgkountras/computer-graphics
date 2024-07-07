@@ -22,6 +22,7 @@ def shade_phong(
     texture_map,
 ):
     # Color no longer needed since we use texture map
+    # They are left in the code for testing without the texture map
     colors = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
     img = X
@@ -48,6 +49,7 @@ def shade_phong(
         # ADDED NORMAL VECTORS INFORMATION
         "top_normal": vertsn[0] if y1 > y2 else vertsn[1],
         "bottom_normal": vertsn[1] if y1 > y2 else vertsn[0],
+        # ADDED UV VECTORS INFORMATION
         "top_uv": uvs[0] if y1 > y2 else uvs[1],
         "bottom_uv": uvs[1] if y1 > y2 else uvs[0],
     }
@@ -66,6 +68,7 @@ def shade_phong(
         # ADDED NORMAL VECTORS INFORMATION
         "top_normal": vertsn[1] if y2 > y3 else vertsn[2],
         "bottom_normal": vertsn[2] if y2 > y3 else vertsn[1],
+        # ADDED UV VECTORS INFORMATION
         "top_uv": uvs[1] if y1 > y2 else uvs[2],
         "bottom_uv": uvs[2] if y1 > y2 else uvs[1],
     }
@@ -84,6 +87,7 @@ def shade_phong(
         # ADDED NORMAL VECTORS INFORMATION
         "top_normal": vertsn[2] if y3 > y1 else vertsn[0],
         "bottom_normal": vertsn[0] if y3 > y1 else vertsn[2],
+        # ADDED UV VECTORS INFORMATION
         "top_uv": uvs[2] if y1 > y2 else uvs[0],
         "bottom_uv": uvs[0] if y1 > y2 else uvs[2],
     }

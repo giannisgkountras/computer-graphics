@@ -37,8 +37,9 @@ def render_object(
     faces = faces.T
     uvs = uvs.T
     face_uv_indices = face_uv_indices.T
+    cam_pos = eye
 
-    img = np.ones((M, N, 3), dtype=float)
+    img = np.full((M, N, 3), bg_color)
 
     normals = calculate_normals(verts, faces)
 
@@ -63,7 +64,6 @@ def render_object(
         vertsn = [normals[face[0]], normals[face[1]], normals[face[2]]]
         vertsc = [vert_colors[face[0]], vert_colors[face[1]], vert_colors[face[2]]]
         bcoords = (verts[face[0]] + verts[face[1]] + verts[face[2]]) / 3
-        cam_pos = eye
         verts_2d = [points_2d[face[0]], points_2d[face[1]], points_2d[face[2]]]
 
         # Initialise all triangles
@@ -128,5 +128,7 @@ def render_object(
                 triangle["uvs"],
                 texture_map,
             )
+    else:
+        print("Unknown shader method. Choose between gouraud or phong")
 
     return img

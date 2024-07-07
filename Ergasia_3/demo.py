@@ -10,7 +10,6 @@ texture_map = cv2.imread("cat_diff.png")
 # Convert the BGR texture_map to RGB format
 texture_map = cv2.cvtColor(texture_map, cv2.COLOR_BGR2RGB)
 texture_map = texture_map.astype(np.float32) / 255.0
-# texture_map /= 255
 
 
 # ===================== STEP 0 ======================#

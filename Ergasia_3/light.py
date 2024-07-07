@@ -15,7 +15,7 @@ def light(point, normal, vcolor, cam_pos, ka, kd, ks, n, lpos, lint, lamb):
     I += ambient
 
     # Process each light source
-    for i in range(np.array(lpos).shape[0]):
+    for i in range(len(lpos)):
         # Light position and intensity
         light_pos = lpos[i]
         light_intensity = lint[i]
