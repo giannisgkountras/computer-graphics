@@ -183,8 +183,8 @@ img_all_gouraud_source1 = render_object(
     data["kd"],
     data["ks"],
     data["n"],
-    data["light_positions"][0],
-    data["light_intensities"][0],
+    [data["light_positions"][0]],
+    [data["light_intensities"][0]],
     data["Ia"],
     data["uvs"],
     data["face_uv_indices"],
@@ -219,8 +219,8 @@ img_all_gouraud_source2 = render_object(
     data["kd"],
     data["ks"],
     data["n"],
-    data["light_positions"][1],
-    data["light_intensities"][1],
+    [data["light_positions"][1]],
+    [data["light_intensities"][1]],
     data["Ia"],
     data["uvs"],
     data["face_uv_indices"],
@@ -255,8 +255,8 @@ img_all_gouraud_source3 = render_object(
     data["kd"],
     data["ks"],
     data["n"],
-    data["light_positions"][2],
-    data["light_intensities"][2],
+    [data["light_positions"][2]],
+    [data["light_intensities"][2]],
     data["Ia"],
     data["uvs"],
     data["face_uv_indices"],
@@ -441,8 +441,8 @@ img_all_phong_source1 = render_object(
     data["kd"],
     data["ks"],
     data["n"],
-    data["light_positions"][0],
-    data["light_intensities"][0],
+    [data["light_positions"][0]],
+    [data["light_intensities"][0]],
     data["Ia"],
     data["uvs"],
     data["face_uv_indices"],
@@ -477,8 +477,8 @@ img_all_phong_source2 = render_object(
     data["kd"],
     data["ks"],
     data["n"],
-    data["light_positions"][1],
-    data["light_intensities"][1],
+    [data["light_positions"][1]],
+    [data["light_intensities"][1]],
     data["Ia"],
     data["uvs"],
     data["face_uv_indices"],
@@ -513,8 +513,8 @@ img_all_phong_source3 = render_object(
     data["kd"],
     data["ks"],
     data["n"],
-    data["light_positions"][2],
-    data["light_intensities"][2],
+    [data["light_positions"][2]],
+    [data["light_intensities"][2]],
     data["Ia"],
     data["uvs"],
     data["face_uv_indices"],
@@ -548,21 +548,21 @@ img_all_phong_source3 = prepareImgForOpenCV(img_all_phong_source3)
 print()
 print("Saving images...")
 # Save the images
-cv2.imwrite("./Results/Gouraud Ambient.jpg", img_ambient_gouraud)
-cv2.imwrite("./Results/Gouraud Diffuse.jpg", img_diff_gouraud)
-cv2.imwrite("./Results/Gouraud Specular.jpg", img_spec_gouraud)
-cv2.imwrite("./Results/Gouraud All Lighting All Sources.jpg", img_all_gouraud)
-cv2.imwrite("./Results/Gouraud All Source 1.jpg", img_all_gouraud_source1)
-cv2.imwrite("./Results/Gouraud All Source 2.jpg", img_all_gouraud_source2)
-cv2.imwrite("./Results/Gouraud All Source 3.jpg", img_all_gouraud_source3)
+cv2.imwrite("./Gouraud Ambient.jpg", img_ambient_gouraud)
+cv2.imwrite("./Gouraud Diffuse.jpg", img_diff_gouraud)
+cv2.imwrite("./Gouraud Specular.jpg", img_spec_gouraud)
+cv2.imwrite("./Gouraud All Lighting All Sources.jpg", img_all_gouraud)
+cv2.imwrite("./Gouraud All Source 1.jpg", img_all_gouraud_source1)
+cv2.imwrite("./Gouraud All Source 2.jpg", img_all_gouraud_source2)
+cv2.imwrite("./Gouraud All Source 3.jpg", img_all_gouraud_source3)
 
-cv2.imwrite("./Results/Phong Ambient.jpg", img_ambient_phong)
-cv2.imwrite("./Results/Phong Diffuse.jpg", img_diff_phong)
-cv2.imwrite("./Results/Phong Specular.jpg", img_spec_phong)
-cv2.imwrite("./Results/Phong All Lighting All Sources.jpg", img_all_phong)
-cv2.imwrite("./Results/Phong All Source 1.jpg", img_all_phong_source1)
-cv2.imwrite("./Results/Phong All Source 2.jpg", img_all_phong_source2)
-cv2.imwrite("./Results/Phong All Source 3.jpg", img_all_phong_source3)
+cv2.imwrite("./Phong Ambient.jpg", img_ambient_phong)
+cv2.imwrite("./Phong Diffuse.jpg", img_diff_phong)
+cv2.imwrite("./Phong Specular.jpg", img_spec_phong)
+cv2.imwrite("./Phong All Lighting All Sources.jpg", img_all_phong)
+cv2.imwrite("./Phong All Source 1.jpg", img_all_phong_source1)
+cv2.imwrite("./Phong All Source 2.jpg", img_all_phong_source2)
+cv2.imwrite("./Phong All Source 3.jpg", img_all_phong_source3)
 
 print()
 print("All images saved in the Results folder.")
