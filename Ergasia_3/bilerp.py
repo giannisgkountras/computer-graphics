@@ -24,6 +24,12 @@ def bilerp(uv, texture_map):
     dx = x - x1
     dy = y - y1
 
+    # Clamp indices to be within the bounds of the texture map
+    x1 = np.clip(x1, 0, width - 1)
+    x2 = np.clip(x2, 0, width - 1)
+    y1 = np.clip(y1, 0, height - 1)
+    y2 = np.clip(y2, 0, height - 1)
+
     # Fetch the values at the corners
     Q11 = texture_map[y1, x1]
     Q12 = texture_map[y2, x1]

@@ -1,5 +1,5 @@
 from light import light
-from vector_interp import vector_interp, normal_interp
+from vector_interp import normal_interp
 from bilerp import bilerp
 
 
@@ -69,8 +69,8 @@ def shade_phong(
         "top_normal": vertsn[1] if y2 > y3 else vertsn[2],
         "bottom_normal": vertsn[2] if y2 > y3 else vertsn[1],
         # ADDED UV VECTORS INFORMATION
-        "top_uv": uvs[1] if y1 > y2 else uvs[2],
-        "bottom_uv": uvs[2] if y1 > y2 else uvs[1],
+        "top_uv": uvs[1] if y2 > y3 else uvs[2],
+        "bottom_uv": uvs[2] if y2 > y3 else uvs[1],
     }
 
     # Edge one is between vertex 3 and 1
@@ -88,8 +88,8 @@ def shade_phong(
         "top_normal": vertsn[2] if y3 > y1 else vertsn[0],
         "bottom_normal": vertsn[0] if y3 > y1 else vertsn[2],
         # ADDED UV VECTORS INFORMATION
-        "top_uv": uvs[2] if y1 > y2 else uvs[0],
-        "bottom_uv": uvs[0] if y1 > y2 else uvs[2],
+        "top_uv": uvs[2] if y3 > y1 else uvs[0],
+        "bottom_uv": uvs[0] if y3 > y1 else uvs[2],
     }
 
     edges = [edge1, edge2, edge3]
@@ -157,7 +157,7 @@ def shade_phong(
                 2,
             )
 
-            uv = vector_interp(
+            uv = normal_interp(
                 [
                     0,  # We calculate based on y, so we give x any value, we don't care
                     active_edge["y_min"],
@@ -260,7 +260,7 @@ def shade_phong(
                     1,
                 )
 
-                uv = vector_interp(
+                uv = normal_interp(
                     [
                         active_points_colors[0][0][0],  # This is x1
                         0,  # We calculate based on x, so we give y any value, we don't care
